@@ -8,7 +8,7 @@
 [![Gemini](https://img.shields.io/badge/Google%20Gemini-1.5%20Flash-orange?logo=google)](https://aistudio.google.com/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.6-blue?logo=typescript)](https://www.typescriptlang.org/)
 
-**Live Demo:** *(Deploy to Vercel and paste link here)*
+Live Demo: https://alphalens-investment-ai.vercel.app/ 
 
 ---
 
