@@ -18,7 +18,7 @@
  * - Google's production-grade model
  */
 
-import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
+import { ChatOpenAI } from "@langchain/openai";
 import { StateGraph, END, START, Annotation } from "@langchain/langgraph";
 import { SystemMessage, HumanMessage } from "@langchain/core/messages";
 
@@ -89,11 +89,18 @@ export type AgentStateType = typeof AgentState.State;
  * maxOutputTokens: 2048 → enough for 200-word analysis sections
  */
 function getLLM(temperature = 0.3) {
-  return new ChatGoogleGenerativeAI({
-    model: "gemini-1.5-flash",
-    apiKey: process.env.GOOGLE_API_KEY!,
+  return new ChatOpenAI({
+    modelName: "google/gemini-1.5-flash", // We use Gemini via OpenRouter
+    openAIApiKey: process.env.OPENROUTER_API_KEY!,
+    configuration: {
+      baseURL: "https://openrouter.ai/api/v1",
+      defaultHeaders: {
+        "HTTP-Referer": "http://localhost:3000", // Required by OpenRouter
+        "X-Title": "AlphaLens", // Optional but good practice for OpenRouter
+      },
+    },
     temperature,
-    maxOutputTokens: 2048,
+    maxTokens: 2048, // note: ChatOpenAI uses maxTokens instead of maxOutputTokens
   });
 }
 
