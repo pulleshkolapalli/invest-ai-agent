@@ -46,11 +46,11 @@ export async function POST(req: NextRequest) {
   }
 
   // ── API key check ─────────────────────────────────────────────────────────
-  if (!process.env.GOOGLE_API_KEY) {
+  if (!process.env.OPENROUTER_API_KEY) {
     return new Response(
       JSON.stringify({
         error:
-          "GOOGLE_API_KEY not configured. Add it to .env.local — get a free key at aistudio.google.com/app/apikey",
+          "OPENROUTER_API_KEY not configured. Add it to .env.local",
       }),
       { status: 500, headers: { "Content-Type": "application/json" } }
     );
