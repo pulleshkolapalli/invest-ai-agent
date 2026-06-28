@@ -364,6 +364,27 @@ Not financial advice. AlphaLens | alphalens.vercel.app
           </div>
         </section>
 
+        {/* ── How It Works ── */}
+        {!loading && !result && (
+          <section className="how-it-works animate-in animate-in-delay">
+            <div className="step-card">
+              <span className="step-number">01</span>
+              <h3 className="step-title">Research</h3>
+              <p className="step-desc">Gathers financials, competitors & sentiment</p>
+            </div>
+            <div className="step-card">
+              <span className="step-number">02</span>
+              <h3 className="step-title">Analyze</h3>
+              <p className="step-desc">Runs detailed SWOT and growth risk analyses</p>
+            </div>
+            <div className="step-card">
+              <span className="step-number">03</span>
+              <h3 className="step-title">Recommend</h3>
+              <p className="step-desc">Delivers structured verdict and confidence rating</p>
+            </div>
+          </section>
+        )}
+
         {/* ── Recent Searches ── */}
         {recentSearches.length > 0 && !loading && !result && (
           <div className="recent-searches animate-in animate-in-delay-2">
@@ -386,34 +407,40 @@ Not financial advice. AlphaLens | alphalens.vercel.app
           </div>
         )}
 
-        {/* ── Progress Tracker ── */}
+        {/* ── Premium Loading Overlay ── */}
         {loading && (
-          <section className="progress-section animate-in">
-            <div className="progress-header">
-              <div className="progress-title">Running Research Pipeline</div>
-              <div className="progress-company">{query}</div>
+          <section className="loading-overlay animate-in">
+            <div className="loading-glow" />
+            <h3 className="hero-eyebrow" style={{ color: 'var(--text-secondary)' }}>
+              Analyzing {query}
+            </h3>
+            
+            <div className="loading-spinner-wrapper">
+              <div className="loading-spinner-outer" />
+              <div className="loading-spinner-inner" />
+              <span className="loading-pulse-logo">📊</span>
             </div>
-            <div className="progress-steps">
-              {STEPS.map((step) => {
+
+            <p className="step-title" style={{ marginBottom: 16 }}>
+              {currentStep || "Running Research Pipeline..."}
+            </p>
+
+            <div className="loading-step-list">
+              {STEPS.map((step, idx) => {
                 const isDone = completedSteps.includes(step);
                 const isActive = currentStep === step && !isDone;
                 return (
                   <div
                     key={step}
-                    className={`progress-step ${isActive ? "active" : ""} ${isDone ? "done" : ""}`}
+                    className={`loading-step-item ${isActive ? "active" : ""} ${isDone ? "done" : ""}`}
                   >
-                    <div className="step-dot" />
-                    <div className="step-label">{step}</div>
-                    {isDone && <div className="step-check">✓</div>}
+                    <span className="loading-step-indicator">
+                      {isDone ? "✓" : idx + 1}
+                    </span>
+                    <span>{step}</span>
                   </div>
                 );
               })}
-            </div>
-            <div className="progress-bar-wrap">
-              <div
-                className="progress-bar-fill"
-                style={{ width: `${progressPct}%` }}
-              />
             </div>
           </section>
         )}
@@ -461,42 +488,67 @@ Not financial advice. AlphaLens | alphalens.vercel.app
         {result && (
           <div className="results-section" ref={resultsRef}>
 
-            {/* ── Verdict Card ── */}
-            <div className={`verdict-card ${verdictClass} animate-in`}>
-              <div className="verdict-glow" />
-              <div className="verdict-top">
-                <div className="verdict-badge">
-                  {verdictEmoji} {result.verdict}
+            {/* ── Scorecard & Recommendation Panel ── */}
+            <div className="scorecard-wrapper animate-in">
+              {/* Left Column: Metric Cards */}
+              <div className="scorecard-metric-panel">
+                <div>
+                  <span className="scorecard-label">Overall Recommendation</span>
+                  <div className="verdict-top" style={{ marginTop: 8 }}>
+                    <span className={`verdict-badge ${verdictClass}`}>
+                      {verdictEmoji} {result.verdict}
+                    </span>
+                  </div>
                 </div>
-                <div className="confidence-ring">
-                  <div className="ring-label">Confidence</div>
-                  <div className="ring-value">{result.confidenceScore}%</div>
+
+                <div style={{ marginTop: 24 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+                    <span className="scorecard-label">Confidence Score</span>
+                    <span className="step-number" style={{ background: 'var(--blue-dim)', color: 'var(--blue)' }}>
+                      {result.confidenceScore}%
+                    </span>
+                  </div>
+                  <div className="scorecard-meter-bar">
+                    <div 
+                      className="scorecard-meter-fill" 
+                      style={{ 
+                        width: `${result.confidenceScore}%`,
+                        background: result.verdict === "INVEST" ? "var(--green)" : result.verdict === "PASS" ? "var(--red)" : "var(--amber)"
+                      }} 
+                    />
+                  </div>
+                </div>
+
+                <div className="action-buttons" style={{ marginTop: 24, gap: 8 }}>
+                  <button
+                    id="pdf-export-btn"
+                    className="action-btn"
+                    onClick={handlePDFExport}
+                    style={{ flex: 1 }}
+                  >
+                    📄 Export PDF
+                  </button>
+                  <button
+                    id="copy-report-btn"
+                    className={`action-btn ${copied ? "success" : ""}`}
+                    onClick={handleCopy}
+                    style={{ flex: 1 }}
+                  >
+                    {copied ? "✅ Copied!" : "📋 Copy"}
+                  </button>
                 </div>
               </div>
-              <div className="verdict-company">{result.companyName}</div>
-              <div className="verdict-reasoning">{result.reasoning}</div>
-              {result.investmentThesis && (
-                <div className="verdict-thesis">
-                  &ldquo;{result.investmentThesis}&rdquo;
-                </div>
-              )}
 
-              {/* Action Buttons */}
-              <div className="action-buttons">
-                <button
-                  id="pdf-export-btn"
-                  className="action-btn"
-                  onClick={handlePDFExport}
-                >
-                  📄 Export PDF
-                </button>
-                <button
-                  id="copy-report-btn"
-                  className={`action-btn ${copied ? "success" : ""}`}
-                  onClick={handleCopy}
-                >
-                  {copied ? "✅ Copied!" : "📋 Copy Report"}
-                </button>
+              {/* Right Column: Reasoning & Thesis */}
+              <div className={`verdict-card ${verdictClass}`} style={{ margin: 0, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                <div className="verdict-glow" />
+                <div className="verdict-company">{result.companyName}</div>
+                <div className="verdict-reasoning" style={{ flex: 1 }}>{result.reasoning}</div>
+                {result.investmentThesis && (
+                  <div className="verdict-thesis" style={{ marginTop: 12 }}>
+                    &ldquo;{result.investmentThesis}&rdquo;
+                  </div>
+                )}
               </div>
             </div>
 
@@ -653,6 +705,19 @@ Not financial advice. AlphaLens | alphalens.vercel.app
           </div>
         )}
       </main>
+
+      {/* ── Footer ── */}
+      <footer className="footer">
+        <div className="footer-content">
+          <p className="footer-text">Built for AI Product Engineer Interview Portfolio</p>
+          <div className="tech-list">
+            <span className="tech-badge">Next.js</span>
+            <span className="tech-badge">LangGraph</span>
+            <span className="tech-badge">OpenRouter</span>
+            <span className="tech-badge">CSS Grid & Flexbox</span>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
