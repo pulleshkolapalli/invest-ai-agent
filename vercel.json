@@ -1,0 +1,8 @@
+{
+  "installCommand": "npm install --legacy-peer-deps",
+  "functions": {
+    "src/app/api/research/route.ts": {
+      "maxDuration": 120
+    }
+  }
+}
