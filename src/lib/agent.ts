@@ -90,7 +90,7 @@ export type AgentStateType = typeof AgentState.State;
  */
 function getLLM(temperature = 0.3) {
   return new ChatOpenAI({
-    modelName: "google/gemini-1.5-flash", // We use Gemini via OpenRouter
+    modelName: "openai/gpt-4o-mini", // Very fast, cheap, and robust on OpenRouter
     openAIApiKey: process.env.OPENROUTER_API_KEY!,
     configuration: {
       baseURL: "https://openrouter.ai/api/v1",

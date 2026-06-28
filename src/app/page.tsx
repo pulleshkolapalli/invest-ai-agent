@@ -299,7 +299,7 @@ Not financial advice. AlphaLens | alphalens.vercel.app
         {/* ── Hero ── */}
         <section className="hero animate-in">
           <div className="hero-eyebrow">
-            Powered by LangGraph · Google Gemini 1.5 Flash
+            Powered by LangGraph · OpenRouter
           </div>
           <h1 className="hero-title">
             Research any company.
